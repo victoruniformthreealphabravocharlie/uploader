@@ -42,7 +42,7 @@ def handle_message(update, context):
         bot.send_message(chat_id=chat_id, text='Please send a valid direct download link for a supported file type.')
 
 # Set up the message handler
-updater = telegram.ext.Updater('YOUR_BOT_TOKEN', use_context=True)
+updater = telegram.ext.Updater('6261956816:AAEToEEo4_aRRMeRi2qPnnTUoQJn3uYHnI8', use_context=True)
 updater.dispatcher.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.text, handle_message))
 
 # Start the bot
