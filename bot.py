@@ -30,7 +30,9 @@ def download_progress(url, file_name):
     return file_name
 
 
-app = pyrogram.Client("zyrup_bot", api_id=10816184, api_hash="54fcbe09fa0ea55509bf88bd04a9aff0", bot_token="5568157345:AAHs36IOywVMJ3RB1DOoXHLW3yO5LnOQg9k")
+app = pyrogram.Client("zyrup_bot", api_id=10816184, api_hash="54fcbe09fa0ea55509bf88bd04a9aff0", bot_token="5528793402:AAEJ0hz_f6rYVUHwZuUCgJGQYCV4MOBQhsw")
+
+my_username = "synzc"
 
 
 @app.on_message(pyrogram.filters.command("start"))
