@@ -1,31 +1,26 @@
-from pyrogram import Client, filters
+import pyrogram
 import urllib.request
 import datetime
+import os
 
-app = Client(
+app = pyrogram.Client(
     "my_bot",
-    api_id=10816184,  # Replace with your API ID
-    api_hash="54fcbe09fa0ea55509bf88bd04a9aff0",  # Replace with your API hash
-    bot_token="5568157345:AAHs36IOywVMJ3RB1DOoXHLW3yO5LnOQg9k"  # Replace with your bot token
+    api_id="YOUR_API_ID",
+    api_hash="YOUR_API_HASH",
+    bot_token="YOUR_BOT_TOKEN"
 )
 
-# Function to get the time in Kolkata in 12 hour format
-def get_time():
-    current_time = datetime.datetime.now(datetime.timezone.utc)
-    india_time = current_time.astimezone(datetime.timezone(datetime.timedelta(hours=5, minutes=30)))
-    time_str = india_time.strftime("%I:%M %p")
-    return time_str
 
-@app.on_message(filters.command(["time"]))
-def send_time(bot, message):
-    time_str = get_time()
-    bot.send_message(chat_id=message.chat.id, text=f"The time in Kolkata, India is {time_str}")
-
-@app.on_message(filters.text & ~filters.command)
-def download_and_upload(bot, message):
-    # Respond to user
-    bot.send_message(chat_id=message.chat.id, text="Received your message, boss")
+@app.on_message(pyrogram.filters.command("time"))
+def get_time(client, message):
+    # Get the current time in Kolkata, India
+    time = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=5, minutes=30))).strftime("%I:%M %p")
     
+    # Reply to the user with the current time
+    message.reply(f"The current time in Kolkata is {time}")
+
+@app.on_message(pyrogram.filters.text & ~pyrogram.filters.command)
+def download_and_upload(client, message):
     # Check if message contains a URL
     if message.entities and message.entities[0].type == "url":
         url = message.text
@@ -39,17 +34,23 @@ def download_and_upload(bot, message):
                 file_name, _ = urllib.request.urlretrieve(url)
                 
                 # Upload file to Telegram
-                bot.send_document(
+                client.send_document(
                     chat_id=message.chat.id,
                     document=file_name,
                     caption=f"Here's your {file_ext} file!"
                 )
+                
+                # Delete the downloaded file
+                os.remove(file_name)
             except Exception as e:
                 print(f"Error downloading or uploading file: {e}")
         else:
-            bot.send_message(
-                chat_id=message.chat.id,
-                text="Invalid file type. Only files with extensions: " + ", ".join(allowed_extensions) + " are allowed."
+            message.reply_text(
+                f"Invalid file type. Only files with extensions: {', '.join(allowed_extensions)} are allowed."
             )
+
+    # Send a response to the user
+    message.reply_text("Received your message, boss!")
+
 
 app.run()
