@@ -5,7 +5,7 @@ app = Client(
     "my_bot",
     api_id=10816184,
     api_hash="54fcbe09fa0ea55509bf88bd04a9aff0",
-    bot_token=6261956816:AAEToEEo4_aRRMeRi2qPnnTUoQJn3uYHnI8
+    bot_token="6261956816:AAEToEEo4_aRRMeRi2qPnnTUoQJn3uYHnI8"
 )
 
 @app.on_message(filters.private)
