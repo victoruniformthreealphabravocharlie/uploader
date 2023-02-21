@@ -1,45 +1,39 @@
-import telegram
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-import requests
-import os
+from pyrogram import Client, filters
+import urllib.request
 
-bot_token = '6261956816:AAEToEEo4_aRRMeRi2qPnnTUoQJn3uYHnI8'
-bot = telegram.Bot(token=bot_token)
+app = Client(
+    "my_bot",
+    api_id=10816184,
+    api_hash=54fcbe09fa0ea55509bf88bd04a9aff0,
+    bot_token=6261956816:AAEToEEo4_aRRMeRi2qPnnTUoQJn3uYHnI8
+)
 
+@app.on_message(filters.private)
+def download_and_upload(bot, message):
+    # Check if message contains a URL
+    if message.entities and message.entities[0].type == "url":
+        url = message.text
+        file_ext = url.split(".")[-1]
+        allowed_extensions = ["mp3", "mp4", "mkv", "jpg", "doc", "pdf", "png", "jpeg"]
+        
+        # Check if URL points to a valid file
+        if file_ext in allowed_extensions:
+            try:
+                # Download file from URL
+                file_name, _ = urllib.request.urlretrieve(url)
+                
+                # Upload file to Telegram
+                bot.send_document(
+                    chat_id=message.chat.id,
+                    document=file_name,
+                    caption=f"Here's your {file_ext} file!"
+                )
+            except Exception as e:
+                print(f"Error downloading or uploading file: {e}")
+        else:
+            bot.send_message(
+                chat_id=message.chat.id,
+                text="Invalid file type. Only files with extensions: " + ", ".join(allowed_extensions) + " are allowed."
+            )
 
-def start(update, context):
-    context.bot.send_message(chat_id=update.message.chat_id,
-                             text='Hello! Send me a direct download link and I will upload the file to this chat.')
-
-
-def download_file(url):
-    local_filename = url.split('/')[-1]
-    with requests.get(url) as r:
-        with open(local_filename, 'wb') as f:
-            f.write(r.content)
-    return local_filename
-
-
-def upload_file(file_path, chat_id):
-    bot.send_document(chat_id=chat_id, document=open(file_path, 'rb'))
-    os.remove(file_path)
-
-
-def handle_message(update, context):
-    chat_id = update.message.chat_id
-    url = update.message.text
-    try:
-        filename = download_file(url)
-        upload_file(filename, chat_id)
-        context.bot.send_message(chat_id=chat_id, text='File uploaded successfully!')
-    except Exception as e:
-        context.bot.send_message(chat_id=chat_id, text='Error: {}'.format(e))
-
-
-if __name__ == '__main__':
-    updater = Updater(bot_token, use_context=False)
-    dp = updater.dispatcher
-    dp.add_handler(CommandHandler('start', start))
-    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))
-    updater.start_polling()
-    updater.idle()
+app.run()
