@@ -5,9 +5,9 @@ import os
 
 app = pyrogram.Client(
     "my_bot",
-    api_id="YOUR_API_ID",
-    api_hash="YOUR_API_HASH",
-    bot_token="YOUR_BOT_TOKEN"
+    api_id="10816184",
+    api_hash="54fcbe09fa0ea55509bf88bd04a9aff0",
+    bot_token="5568157345:AAHs36IOywVMJ3RB1DOoXHLW3yO5LnOQg9k"
 )
 
 
