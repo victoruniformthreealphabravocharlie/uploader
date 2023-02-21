@@ -40,7 +40,7 @@ def start(client, message):
     message.reply_text("Hello! Send me a direct download link of a file and I'll upload it to Telegram for you.")
 
 
-@app.on_message(pyrogram.filters.text & ~pyrogram.filters.command)
+@app.on_message(pyrogram.filters.text)
 def download(client, message):
     url = message.text
     if url.endswith((".mp3", ".mp4", ".mkv", ".avi", ".pdf", ".doc", ".jpg", ".jpeg", ".png", ".gif")):
