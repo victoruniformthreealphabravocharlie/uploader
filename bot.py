@@ -4,7 +4,7 @@ import os
 import time
 
 
-def download_progress(url, file_name):
+def download_progress(url, file_name, message):
     with open(file_name, "wb") as f:
         response = requests.get(url, stream=True)
         total_length = response.headers.get("content-length")
@@ -24,8 +24,7 @@ def download_progress(url, file_name):
                 speed = round(dl / (1024 * 1024 * (time.time() - start_time) + 0.001), 2)
                 progress = "[" + "=" * done + " " * (50 - done) + "]"
                 percentage = round(dl / total_length * 100, 2)
-                message = f"Downloading {file_name} {progress} {percentage}% {downloaded_mb}MB/{total_mb}MB ({speed}MB/s)"
-                print(message)
+                message.edit_text(f"Downloading {file_name} {progress} {percentage}% {downloaded_mb}MB/{total_mb}MB ({speed}MB/s)")
 
     return file_name
 
@@ -39,20 +38,32 @@ my_username = "synzc"
 def start(client, message):
     message.reply_text("Hello! Send me a direct download link of a file and I'll upload it to Telegram for you.")
 
+@app.on_message(pyrogram.filters.command("about"))
+def about(client, message):
+    message.reply_text("I'm a bot developed by @synzc for personal use with different functions. I can help you download and upload files to Telegram. You can send me a direct download link of a file, and I will download it for you and upload it to Telegram. If you have any questions or suggestions, feel free to contact my developer @synzc")
+
+@app.on_message(pyrogram.filters.command("status"))
+def start(client, message):
+    message.reply_text("I'm online and runnning.."))
+
+@app.on_message(pyrogram.filters.command("help"))
+def start(client, message):
+    message.reply_text("--/start--/about--/status--/help--"))
+ 
 
 @app.on_message(pyrogram.filters.text)
 def download(client, message):
     url = message.text
     if url.endswith((".mp3", ".mp4", ".mkv", ".avi", ".pdf", ".doc", ".jpg", ".jpeg", ".png", ".gif")):
         file_name = url.split("/")[-1]
-        message.reply_text("Received your message, boss. Downloading...")
-        file_path = download_progress(url, file_name)
-        message.reply_text(f"Uploading {file_name}...")
+        sent_message = message.reply_text("Received your message. Starting to download now...")
+        file_path = download_progress(url, file_name, sent_message)
+        sent_message.edit_text(f"Starting to upload {file_name} now...")
         client.send_document(message.chat.id, file_path, caption=f"Here's your file: {file_name}")
         os.remove(file_path)
-        message.reply_text(f"Done! Deleted {file_name} from the server.")
+        sent_message.edit_text(f"Uploaded {file_name} successfully!! Deleted the file from server now.")
     else:
-        message.reply_text("Sorry, I only support downloading these file formats: .mp3, .mp4, .mkv, .avi, .pdf, .doc, .jpg, .jpeg, .png, .gif")
+        message.reply_text("Sorry, send me a direct download link only of these files! ((.mp3, .mp4, .mkv, .avi, .pdf, .doc, .jpg, .jpeg, .png, .gif))")
 
 
 app.run()
