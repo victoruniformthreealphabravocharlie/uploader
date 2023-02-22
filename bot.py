@@ -40,7 +40,7 @@ def start(client, message):
 
 @app.on_message(pyrogram.filters.command("about"))
 def about(client, message):
-    message.reply_text("I'm a bot developed by @synzc for personal use with different functions. I can help you download and upload files to Telegram. You can send me a direct download link of a file, and I will download it for you and upload it to Telegram. If you have any questions or suggestions, feel free to contact my developer @synzc")
+    message.reply_text("You can send me a direct download link of a file and I'll download and upload it for you here. I'm a bot developed solely by @synzc")
 
 @app.on_message(pyrogram.filters.command("status"))
 def start(client, message):
@@ -48,7 +48,7 @@ def start(client, message):
 
 @app.on_message(pyrogram.filters.command("help"))
 def start(client, message):
-    message.reply_text("--/start--/about--/status--/help--"))
+    message.reply_text("/start, /help, /about, /status"))
  
 
 @app.on_message(pyrogram.filters.text)
